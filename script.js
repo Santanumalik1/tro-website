@@ -1,4 +1,37 @@
-// Smooth scrolling for navigation links
+// ==================== //
+// Custom Cursor
+// ==================== //
+const cursor = document.querySelector('.cursor');
+const cursorFollower = document.querySelector('.cursor-follower');
+
+document.addEventListener('mousemove', (e) => {
+    if (cursor && cursorFollower) {
+        cursor.style.left = e.clientX + 'px';
+        cursor.style.top = e.clientY + 'px';
+        
+        setTimeout(() => {
+            cursorFollower.style.left = e.clientX + 'px';
+            cursorFollower.style.top = e.clientY + 'px';
+        }, 100);
+    }
+});
+
+// ==================== //
+// Navigation Scroll Effect
+// ==================== //
+const navbar = document.querySelector('.navbar');
+
+window.addEventListener('scroll', () => {
+    if (window.scrollY > 50) {
+        navbar.classList.add('scrolled');
+    } else {
+        navbar.classList.remove('scrolled');
+    }
+});
+
+// ==================== //
+// Smooth Scroll for Navigation
+// ==================== //
 document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     anchor.addEventListener('click', function (e) {
         e.preventDefault();
@@ -12,87 +45,111 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     });
 });
 
-// Form submission handling
+// ==================== //
+// Hamburger Menu Toggle
+// ==================== //
+const hamburger = document.querySelector('.hamburger');
+const navLinks = document.querySelector('.nav-links');
+
+if (hamburger) {
+    hamburger.addEventListener('click', () => {
+        navLinks.classList.toggle('active');
+        hamburger.classList.toggle('active');
+    });
+}
+
+// ==================== //
+// Form Submission
+// ==================== //
 const contactForm = document.querySelector('.contact-form');
+
 if (contactForm) {
     contactForm.addEventListener('submit', function(e) {
         e.preventDefault();
         
-        // Get form values
-        const name = this.querySelector('input[type="text"]').value;
-        const email = this.querySelector('input[type="email"]').value;
-        const message = this.querySelector('textarea').value;
+        const name = document.querySelector('#name').value;
+        const email = document.querySelector('#email').value;
+        const message = document.querySelector('#message').value;
         
-        // Validate form
-        if (name.trim() === '' || email.trim() === '' || message.trim() === '') {
-            alert('Please fill in all fields');
-            return;
+        if (name && email && message) {
+            alert('Thank you for your message! We\'ll get back to you soon.');
+            contactForm.reset();
         }
-        
-        // Validate email format
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (!emailRegex.test(email)) {
-            alert('Please enter a valid email address');
-            return;
-        }
-        
-        // Success message (you can replace this with actual form submission)
-        alert('Thank you for your message! We\'ll get back to you soon.');
-        
-        // Reset form
-        this.reset();
     });
 }
 
-// Add scroll animation for service cards
+// ==================== //
+// Scroll Reveal Animation
+// ==================== //
 const observerOptions = {
     threshold: 0.1,
     rootMargin: '0px 0px -50px 0px'
 };
 
-const observer = new IntersectionObserver(function(entries) {
+const observer = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
         if (entry.isIntersecting) {
-            entry.target.style.opacity = '1';
-            entry.target.style.transform = 'translateY(0)';
+            entry.target.classList.add('active');
         }
     });
 }, observerOptions);
 
-// Observe all service cards
-document.querySelectorAll('.service-card').forEach(card => {
-    card.style.opacity = '0';
-    card.style.transform = 'translateY(20px)';
-    card.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
-    observer.observe(card);
+// Observe elements for scroll animations
+const revealElements = document.querySelectorAll('.service-card, .portfolio-item, .stat-item, .client-logo');
+revealElements.forEach(el => {
+    el.classList.add('reveal');
+    observer.observe(el);
 });
 
-// Observe all client logos
-document.querySelectorAll('.client-logo').forEach(logo => {
-    logo.style.opacity = '0';
-    logo.style.transform = 'scale(0.95)';
-    logo.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
-    observer.observe(logo);
+// ==================== //
+// Marquee Infinite Scroll
+// ==================== //
+const marqueeContent = document.querySelector('.marquee-content');
+if (marqueeContent) {
+    const marqueeHTML = marqueeContent.innerHTML;
+    marqueeContent.innerHTML = marqueeHTML + marqueeHTML;
+}
+
+// ==================== //
+// Page Load Animations
+// ==================== //
+window.addEventListener('load', () => {
+    document.body.classList.add('loaded');
 });
 
-// Add active state to navigation based on scroll
-window.addEventListener('scroll', function() {
-    let current = '';
-    const sections = document.querySelectorAll('section');
-    
-    sections.forEach(section => {
-        const sectionTop = section.offsetTop;
-        if (window.scrollY >= sectionTop - 200) {
-            current = section.getAttribute('id');
-        }
+// ==================== //
+// Interactive Hover Effects
+// ==================== //
+const serviceCards = document.querySelectorAll('.service-card');
+serviceCards.forEach(card => {
+    card.addEventListener('mouseenter', () => {
+        serviceCards.forEach(otherCard => {
+            if (otherCard !== card) {
+                otherCard.style.opacity = '0.5';
+            }
+        });
     });
     
-    document.querySelectorAll('.nav-links a').forEach(link => {
-        link.classList.remove('active');
-        if (link.getAttribute('href') === '#' + current) {
-            link.classList.add('active');
-        }
+    card.addEventListener('mouseleave', () => {
+        serviceCards.forEach(otherCard => {
+            otherCard.style.opacity = '1';
+        });
     });
 });
 
-console.log('The Real Ones website loaded successfully!');}
+// ==================== //
+// Portfolio Hover Interactions
+// ==================== //
+const portfolioItems = document.querySelectorAll('.portfolio-item');
+portfolioItems.forEach(item => {
+    item.addEventListener('mouseenter', function() {
+        this.style.transform = 'scale(1.05)';
+        this.style.transition = 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)';
+    });
+    
+    item.addEventListener('mouseleave', function() {
+        this.style.transform = 'scale(1)';
+    });
+});
+
+console.log('%c✨ The Real Ones - Website Loaded ✨', 'color: #ffc107; font-size: 20px; font-weight: bold;');
